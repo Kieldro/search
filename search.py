@@ -84,19 +84,36 @@ def depthFirstSearch(problem):
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   """
   "*** YOUR CODE HERE ***"
+  # run with: python pacman.py -l tinyMaze -p SearchAgent
   print "Start:", problem.getStartState()
   print "Is the start a goal?", problem.isGoalState(problem.getStartState())
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   print problem
-  print Directions
-#  util.raiseNotDefined()
-  return [Directions.EAST, Directions.SOUTH]
+  successors = problem.getSuccessors(problem.getStartState() )
+  print successors
+  actions = [action for s, action, p in successors]
+  print actions
+  l = [2]
+  l.pop()
+  print l == None
+  
+  actions = None
+  node = problem.getStartState()
+  frontier = problem.getSuccessors(node)
+  explored = set(node)
+  
+  while (False and frontier != set() ):
+	  if problem.isGoalState(node):
+	  	return actions
+	  
+  #return actions
+  util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
   util.raiseNotDefined()
-      
+  
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
