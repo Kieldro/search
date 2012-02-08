@@ -15,6 +15,8 @@ by Pacman agents (in searchAgents.py).
 
 import util
 
+DEBUG = True
+
 class SearchProblem:
   """
   This class outlines the structure of a search problem, but doesn't implement
@@ -96,16 +98,21 @@ def depthFirstSearch(problem):
   l = [2]
   l.pop()
   print l == None
+  if DEBUG: print 'booya'
   
   actions = None
-  node = problem.getStartState()
-  frontier = problem.getSuccessors(node)
-  explored = set(node)
+  node = problem.getStartState()	# current node
+  explored = set(node)		# explored set
+  if DEBUG: print dir(explored)
+  if DEBUG: print help(explored.add )
   
-  while (False and frontier != set() ):
-	  if problem.isGoalState(node):
-	  	return actions
-	  
+  while False and frontier != set() :
+    # add node to explored set
+    explored.add(node)
+    if problem.isGoalState(node):
+      return actions
+    frontier = problem.getSuccessors(node)
+	
   #return actions
   util.raiseNotDefined()
 
