@@ -69,7 +69,7 @@ def tinyMazeSearch(problem):
   from game import Directions
   s = Directions.SOUTH
   w = Directions.WEST
-  return  [s,s,w,s,w,w,s,w]
+  return  ['South',s,'West',s,w,w,s,w]
 
 def depthFirstSearch(problem):
   """
@@ -86,40 +86,69 @@ def depthFirstSearch(problem):
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   """
   "*** YOUR CODE HERE ***"
-  # run with: python pacman.py -l tinyMaze -p SearchAgent
+  """
+  run with:
+  python pacman.py -l tinyMaze -p SearchAgent;
+  python pacman.py -l mediumMaze -p SearchAgent;
+  python pacman.py -l bigMaze -p SearchAgent -z .5
+  """
   print "Start:", problem.getStartState()
-  print "Is the start a goal?", problem.isGoalState(problem.getStartState())
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
-  print problem
   successors = problem.getSuccessors(problem.getStartState() )
-  print successors
   actions = [action for s, action, p in successors]
-  print actions
-  l = [2]
-  l.pop()
-  print l == None
-  if DEBUG: print 'booya'
+  L = [0,1,2,3,4]
+  L[2:] = []
+  print L
   
-  actions = None
-  node = problem.getStartState()	# current node
-  explored = set(node)		# explored set
-  if DEBUG: print dir(explored)
-  if DEBUG: print help(explored.add )
+  return genericSearch(problem, -1)
+
+def genericSearch(problem, x):
+  # initialize variables
+  actions = []		# list of actions
+  frontier = util.PriorityQueue()		# priority queue of (node, depth)
+  explored = set()		# explored set of states
   
-  while False and frontier != set() :
-    # add node to explored set
-    explored.add(node)
-    if problem.isGoalState(node):
+  rootNode = (problem.getStartState(), None, 0)	# (state, action, depth)
+  frontier.push(rootNode, 0)
+  if DEBUG: assert set() == set([])
+  #if DEBUG: print dir(list)
+  
+  while frontier != set() :
+    raw_input('waiting for input...')
+    node = state, action, depth = frontier.pop()
+    if DEBUG: print 'popped node: ' + str(node)
+    actions[depth-1:] = []		# reset actions to current node
+    if action is not None:
+    	actions.append(action)
+    if DEBUG: print 'action stack: ' + str(actions[-12:])
+    # add state to explored set
+    explored.add(state)
+    
+    # test for goal state
+    if problem.isGoalState(state):
+      if DEBUG: print 'returning actions: ' + str(actions)
       return actions
-    frontier = problem.getSuccessors(node)
-	
-  #return actions
-  util.raiseNotDefined()
+    
+    # add successors to frontier
+    depth += 1
+    #if DEBUG: print 'depth: ' + str(depth)
+    for state, action, c in problem.getSuccessors(state):
+        if state not in explored:
+          frontier.push((state, action, depth), x*depth)
+  
+  if DEBUG: print 'frontier empty'
+  return actions
 
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  """
+  run with:
+  python pacman.py -l mediumMaze -p SearchAgent -a fn=bfs
+  python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
+  """
+  
+  return genericSearch(problem, 1)
   
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
