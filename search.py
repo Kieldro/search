@@ -15,7 +15,7 @@ by Pacman agents (in searchAgents.py).
 
 import util
 
-DEBUG = True
+DEBUG = False
 
 class SearchProblem:
   """
@@ -71,6 +71,44 @@ def tinyMazeSearch(problem):
   w = Directions.WEST
   return  ['South',s,'West',s,w,w,s,w]
 
+def genericSearch(problem, x):
+  # initialize variables
+  actions = []		# list of actions
+  frontier = util.PriorityQueue()		# priority queue of (node, depth)
+  explored = set()		# explored set of states
+  
+  rootNode = (problem.getStartState(), [], 0)	# (state, actions, depth)
+  frontier.push(rootNode, 0)
+  if DEBUG: assert set() == set([])
+  #if DEBUG: print dir(list)
+  
+  while frontier != set() :
+   # if DEBUG: raw_input('waiting for input...')
+    node = state, actions, depth = frontier.pop()
+    if DEBUG: print 'popped node: ' + str(node)
+    #actions[depth-1:] = []		# reset actions to current node
+    
+    #if action is not None:
+    #actions.append(action)
+    if DEBUG: print 'actions: ' + str(actions)
+    # add state to explored set
+    explored.add(state)
+    
+    # test for goal state
+    if problem.isGoalState(state):
+      if DEBUG: print 'returning actions: ' + str(actions)
+      return actions
+    
+    # add successors to frontier
+    for state, action, cost in problem.getSuccessors(state):
+        if state not in explored:
+          #if DEBUG: print 'depth: ' + str(depth)
+          frontier.push((state, actions + [action], depth+cost), x*depth)
+    if DEBUG: print "\n"
+    
+  if DEBUG: print 'frontier empty'
+  return actions
+
 def depthFirstSearch(problem):
   """
   Search the deepest nodes in the search tree first [p 85].
@@ -92,68 +130,30 @@ def depthFirstSearch(problem):
   python pacman.py -l mediumMaze -p SearchAgent;
   python pacman.py -l bigMaze -p SearchAgent -z .5
   """
-  print "Start:", problem.getStartState()
-  print "Start's successors:", problem.getSuccessors(problem.getStartState())
-  successors = problem.getSuccessors(problem.getStartState() )
-  actions = [action for s, action, p in successors]
-  L = [0,1,2,3,4]
-  L[2:] = []
-  print L
-  
   return genericSearch(problem, -1)
-
-def genericSearch(problem, x):
-  # initialize variables
-  actions = []		# list of actions
-  frontier = util.PriorityQueue()		# priority queue of (node, depth)
-  explored = set()		# explored set of states
-  
-  rootNode = (problem.getStartState(), None, 0)	# (state, action, depth)
-  frontier.push(rootNode, 0)
-  if DEBUG: assert set() == set([])
-  #if DEBUG: print dir(list)
-  
-  while frontier != set() :
-    raw_input('waiting for input...')
-    node = state, action, depth = frontier.pop()
-    if DEBUG: print 'popped node: ' + str(node)
-    actions[depth-1:] = []		# reset actions to current node
-    if action is not None:
-    	actions.append(action)
-    if DEBUG: print 'action stack: ' + str(actions[-12:])
-    # add state to explored set
-    explored.add(state)
-    
-    # test for goal state
-    if problem.isGoalState(state):
-      if DEBUG: print 'returning actions: ' + str(actions)
-      return actions
-    
-    # add successors to frontier
-    depth += 1
-    #if DEBUG: print 'depth: ' + str(depth)
-    for state, action, c in problem.getSuccessors(state):
-        if state not in explored:
-          frontier.push((state, action, depth), x*depth)
-  
-  if DEBUG: print 'frontier empty'
-  return actions
 
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
   """
   run with:
-  python pacman.py -l mediumMaze -p SearchAgent -a fn=bfs
+  	
   python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
   """
-  
   return genericSearch(problem, 1)
   
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  """
+  test with:
+  python pacman.py -l mediumMaze -p SearchAgent -a fn=ucs
+
+  python pacman.py -l mediumDottedMaze -p StayEastSearchAgent
+
+  python pacman.py -l mediumScaryMaze -p StayWestSearchAgent
+  """
+  return genericSearch(problem, 1)
 
 def nullHeuristic(state, problem=None):
   """
