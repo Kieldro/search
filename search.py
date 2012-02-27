@@ -15,7 +15,7 @@ by Pacman agents (in searchAgents.py).
 
 import util
 
-DEBUG = False
+DEBUG = True
 
 class SearchProblem:
   """
@@ -71,44 +71,6 @@ def tinyMazeSearch(problem):
   w = Directions.WEST
   return  ['South',s,'West',s,w,w,s,w]
 
-def genericSearch(problem, x):
-  # initialize variables
-  actions = []		# list of actions
-  frontier = util.PriorityQueue()		# priority queue of (node, depth)
-  explored = set()		# explored set of states
-  
-  rootNode = (problem.getStartState(), [], 0)	# (state, actions, depth)
-  frontier.push(rootNode, 0)
-  if DEBUG: assert set() == set([])
-  #if DEBUG: print dir(list)
-  
-  while frontier != set() :
-   # if DEBUG: raw_input('waiting for input...')
-    node = state, actions, depth = frontier.pop()
-    if DEBUG: print 'popped node: ' + str(node)
-    #actions[depth-1:] = []		# reset actions to current node
-    
-    #if action is not None:
-    #actions.append(action)
-    if DEBUG: print 'actions: ' + str(actions)
-    # add state to explored set
-    explored.add(state)
-    
-    # test for goal state
-    if problem.isGoalState(state):
-      if DEBUG: print 'returning actions: ' + str(actions)
-      return actions
-    
-    # add successors to frontier
-    for state, action, cost in problem.getSuccessors(state):
-        if state not in explored:
-          #if DEBUG: print 'depth: ' + str(depth)
-          frontier.push((state, actions + [action], depth+cost), x*depth)
-    if DEBUG: print "\n"
-    
-  if DEBUG: print 'frontier empty'
-  return actions
-
 def depthFirstSearch(problem):
   """
   Search the deepest nodes in the search tree first [p 85].
@@ -137,7 +99,7 @@ def breadthFirstSearch(problem):
   "*** YOUR CODE HERE ***"
   """
   run with:
-  	
+  python pacman.py -l mediumMaze -p SearchAgent -a fn=bfs	
   python pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
   """
   return genericSearch(problem, 1)
@@ -165,8 +127,48 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
   "Search the node that has the lowest combined cost and heuristic first."
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  """
+  test with:
+  python pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+  """
+  return genericSearch(problem, 1, heuristic)
+
+def genericSearch(problem, x, heuristic=nullHeuristic):
+  # initialize variables
+  actions = []		# list of actions
+  frontier = util.PriorityQueue()		# priority queue of (node, depth)
+  explored = set()		# explored set of states
+  if DEBUG: print 'initialized frontier: ' + str(frontier)
+  
+  rootNode = (problem.getStartState(), [], 0)	# (state, actions, depth)
+  frontier.push(rootNode, 0)
+  if DEBUG: assert set() == set([])
+  #if DEBUG: print dir(list)
+  
+  while not frontier.isEmpty():
+   # if DEBUG: raw_input('waiting for input...')
+    node = state, actions, depth = frontier.pop()
+    #if DEBUG: print 'popped node: ' + str(node)
+    #if DEBUG: print 'actions: ' + str(actions)
     
+    # add state to explored set
+    explored.add(state)
+    
+    # test for goal state
+    if problem.isGoalState(state):
+      if DEBUG: print 'returning actions: ' + str(actions)
+      return actions
+    
+    # add successors to frontier
+    successors = problem.getSuccessors(state)
+    for state, action, cost in successors:
+        if state not in explored:
+          #if DEBUG: print 'depth: ' + str(depth)
+          frontier.push((state, actions + [action], depth+cost + heuristic(state, problem)), x*depth)
+    #if DEBUG: print "\n"
+    
+  if DEBUG: print 'frontier empty'
+  return actions
   
 # Abbreviations
 bfs = breadthFirstSearch
