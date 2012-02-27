@@ -277,16 +277,26 @@ class CornersProblem(search.SearchProblem):
     self._expanded = 0 # Number of search nodes expanded
     
     "*** YOUR CODE HERE ***"
+    """
+    test with:
+    python pacman.py -l tinyCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
+    python pacman.py -l mediumCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
+    """
     
   def getStartState(self):
     "Returns the start state (in your state space, not the full Pacman state space)"
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    
+    return (self.startingPosition, () )		# (positions, tuple of corners found)
     
   def isGoalState(self, state):
     "Returns whether this search state is a goal state of the problem"
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    if state[1] == set(self.corners):
+      return True
+    
+    return False
        
   def getSuccessors(self, state):
     """
@@ -310,6 +320,14 @@ class CornersProblem(search.SearchProblem):
       #   hitsWall = self.walls[nextx][nexty]
       
       "*** YOUR CODE HERE ***"
+      #stepCost = self.getCostOfActions(action)
+      x,y = state[0]
+      dx, dy = Actions.directionToVector(action)
+      nextx, nexty = int(x + dx), int(y + dy)
+      hitsWall = self.walls[nextx][nexty]
+      #nextState = state[0] + 
+      if False and hitsWall:
+        successors += [ (state, action, stepCost) ]
       
     self._expanded += 1
     return successors

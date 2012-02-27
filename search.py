@@ -141,6 +141,7 @@ def genericSearch(problem, x, heuristic=nullHeuristic):
   if DEBUG: print 'initialized frontier: ' + str(frontier)
   
   rootNode = (problem.getStartState(), [], 0)	# (state, actions, depth)
+  if DEBUG: print 'start state: ' + str(rootNode[0])
   frontier.push(rootNode, 0)
   if DEBUG: assert set() == set([])
   #if DEBUG: print dir(list)
@@ -161,6 +162,7 @@ def genericSearch(problem, x, heuristic=nullHeuristic):
     
     # add successors to frontier
     successors = problem.getSuccessors(state)
+    if DEBUG: print 'successors: ' + str(successors)
     for state, action, cost in successors:
         if state not in explored:
           #if DEBUG: print 'depth: ' + str(depth)
