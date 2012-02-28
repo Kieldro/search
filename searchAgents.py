@@ -339,10 +339,11 @@ class CornersProblem(search.SearchProblem):
         if DEBUG: print 'CORNER FOUND: ' + str(visited)
       
       nextState = (position, visited )
-      if DEBUG: print 'nextState: ' + str(nextState)
+      #if DEBUG: print 'nextState: ' + str(nextState)
       successors += [ (nextState, action, stepCost) ]
       
     self._expanded += 1
+    if DEBUG and (self._expanded % 500) == 0: print 'nodes expanded: ' + str(self._expanded)
     #if DEBUG: print 'successors: ' + str(successors)
     return successors
 
