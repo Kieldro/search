@@ -162,7 +162,7 @@ def genericSearch(problem, x, heuristic=nullHeuristic):
     
     # add successors to frontier
     successors = problem.getSuccessors(state)
-    if DEBUG: print 'successors: ' + str(successors)
+    #if DEBUG: print 'successors: ' + str(successors)
     for state, action, cost in successors:
         if state not in explored:
           #if DEBUG: print 'depth: ' + str(depth)

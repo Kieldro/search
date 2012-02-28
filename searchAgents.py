@@ -36,6 +36,8 @@ import time
 import search
 import searchAgents
 
+DEBUG = True
+
 class GoWestAgent(Agent):
   "An agent that goes West until it can't."
   
@@ -286,14 +288,16 @@ class CornersProblem(search.SearchProblem):
   def getStartState(self):
     "Returns the start state (in your state space, not the full Pacman state space)"
     "*** YOUR CODE HERE ***"
-    
-    
-    return (self.startingPosition, () )		# (positions, tuple of corners found)
+    position = self.startingPosition
+    visited = ()
+    if position in self.corners:		# start state is corner
+      visited += (position,)
+    return (position, visited )		# (positions, tuple of corners found)
     
   def isGoalState(self, state):
     "Returns whether this search state is a goal state of the problem"
     "*** YOUR CODE HERE ***"
-    if state[1] == set(self.corners):
+    if set(state[1]) == set(self.corners):
       return True
     
     return False
@@ -318,18 +322,28 @@ class CornersProblem(search.SearchProblem):
       #   dx, dy = Actions.directionToVector(action)
       #   nextx, nexty = int(x + dx), int(y + dy)
       #   hitsWall = self.walls[nextx][nexty]
-      
       "*** YOUR CODE HERE ***"
-      #stepCost = self.getCostOfActions(action)
+      # DEBUG: print 'action: ' + str(action)
+      stepCost = self.getCostOfActions( [action] )
       x,y = state[0]
       dx, dy = Actions.directionToVector(action)
-      nextx, nexty = int(x + dx), int(y + dy)
+      position = nextx, nexty = int(x + dx), int(y + dy)
+      #if DEBUG: print 'position: ' + str(position)
       hitsWall = self.walls[nextx][nexty]
-      #nextState = state[0] + 
-      if False and hitsWall:
-        successors += [ (state, action, stepCost) ]
+      if hitsWall:
+        continue
+      
+      visited = state[1]
+      if position in self.corners and position not in visited:
+        visited += (position,)		# add to visited tuple
+        if DEBUG: print 'CORNER FOUND: ' + str(visited)
+      
+      nextState = (position, visited )
+      if DEBUG: print 'nextState: ' + str(nextState)
+      successors += [ (nextState, action, stepCost) ]
       
     self._expanded += 1
+    #if DEBUG: print 'successors: ' + str(successors)
     return successors
 
   def getCostOfActions(self, actions):
