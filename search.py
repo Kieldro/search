@@ -135,7 +135,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
 def genericSearch(problem, x, heuristic=nullHeuristic):
   # initialize variables
-  actions = []		# list of actions
   frontier = util.PriorityQueue()		# priority queue of (node, depth)
   explored = set()		# explored set of states
   if DEBUG: print 'initialized frontier: ' + str(frontier)
@@ -163,10 +162,12 @@ def genericSearch(problem, x, heuristic=nullHeuristic):
     # add successors to frontier
     successors = problem.getSuccessors(state)
     #if DEBUG: print 'successors: ' + str(successors)
-    for state, action, cost in successors:
+    for state, action, stepCost in successors:
         if state not in explored:
-          #if DEBUG: print 'depth: ' + str(depth)
-          frontier.push((state, actions + [action], depth+cost + heuristic(state, problem)), x*depth)
+          succActions = actions + [action]
+          cost = depth + stepCost
+          frontier.push( (state, succActions, cost), x*(cost + heuristic(state,problem)) )
+          #if DEBUG: print 'actions pushed: ' + str(actions[-3:])
     #if DEBUG: print "\n"
     
   if DEBUG: print 'frontier empty'
